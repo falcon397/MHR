@@ -17,7 +17,7 @@ $(document).ready(function () {
 
 function upload() {
     $.ajax({
-        url: 'default.aspx/GetData',
+        url: 'www.huckshome.com/projects/mhr/default.aspx/GetData',
         type: 'POST',
         dataType: 'json',
         data: { file: $('FileUpload1').val() },
