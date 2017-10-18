@@ -14,6 +14,7 @@ $(document).ready(function () {
 });
 
 function setData(url) {
+    var test = new Object();
     var csv = document.getElementById('fileUpload').files[0];
     if (csv) {
         // create reader
@@ -21,9 +22,21 @@ function setData(url) {
         reader.readAsText(csv);
         reader.onload = function (e) {
             // browser completed reading file - display it
-            upload(urlMHR + url, csvJSON(e.target.result));
+            //upload(urlMHR + url, csvJSON(e.target.result));
+            test = csvJSON(e.target.result);
         };
     }
+
+    var xhr = createCORSRequest('POST', urlMHR + url);
+    xhr.onload = function (data) {
+        console.log(data.target.response);
+    };
+    xhr.onerror = OnError;
+    xhr.send();
+}
+
+function OnError() {
+    console.error('Failed');
 }
 
 function csvJSON(csv) {
@@ -40,6 +53,23 @@ function csvJSON(csv) {
         result.push(obj);
     }
     return JSON.stringify(result);
+}
+
+//Build XHR object
+function createCORSRequest(method, url) {
+    var xhr = new XMLHttpRequest();
+    if ("withCredentials" in xhr) {
+        // XHR for Chrome/Firefox/Opera/Safari.
+        xhr.open(method, url, true);
+    } else if (typeof XDomainRequest !== "undefined") {
+        // XDomainRequest for IE.
+        xhr = new XDomainRequest();
+        xhr.open(method, url);
+    } else {
+        // CORS not supported.
+        xhr = null;
+    }
+    return xhr;
 }
 
 function upload(url, json) {
