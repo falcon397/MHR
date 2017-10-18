@@ -7,59 +7,55 @@ var urlMHR = 'https://huckshome.com/projects/MHR/';
 //Stuff to do at page load.
 $(document).ready(function () {
     //Disable form submit, this page solely relies on AJAX calls and JSON data, with jQuery updating the fields.
-    $('#Form1').submit(function () { return false; });
+    $('#Form1').submit(function (event) { event.preventDefault(); });
 
     //Main Functions
-    //getData();
-
 
 });
 
-function upload() {
-    $.ajax({
-        url: 'www.huckshome.com/projects/mhr/default.aspx/GetData',
-        type: 'POST',
-        dataType: 'json',
-        data: { file: $('FileUpload1').val() },
-        success: function (data) {
-            console.log(data);
-        },
-        error: function (data) {
-            console.log(data);
-        }
-    })
-};
-
-function CSVToArray(strData, strDelimiter) {
-    strDelimiter = (strDelimiter || ",");
-    var objPattern = new RegExp(
-        (
-            // Delimiters.
-            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
-            // Quoted fields.
-            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
-            // Standard fields.
-            "([^\"\\" + strDelimiter + "\\r\\n]*))"
-        ),
-        "gi"
-        );
-
-    var arrData = [[]];
-    var arrMatches = null;
-    while (arrMatches = objPattern.exec(strData)) {
-        var strMatchedDelimiter = arrMatches[1];
-        if (strMatchedDelimiter.length && (strMatchedDelimiter != strDelimiter)) {
-            arrData.push([]);
-        }
-        if (arrMatches[2]) {
-            var strMatchedValue = arrMatches[2].replace(
-                new RegExp("\"\"", "g"),
-                "\""
-                );
-        } else {
-            var strMatchedValue = arrMatches[3];
-        }
-        arrData[arrData.length - 1].push(strMatchedValue);
+function setData(url) {
+    var csv = document.getElementById('fileUpload').files[0];
+    if (csv) {
+        // create reader
+        var reader = new FileReader();
+        reader.readAsText(csv);
+        reader.onload = function (e) {
+            // browser completed reading file - display it
+            upload('http://localhost/projects/MHRServices/MHRService.svc/save', csvJSON(e.target.result));
+        };
     }
-    return (arrData);
+}
+
+function csvJSON(csv) {
+    var lines = csv.split("\n");
+    var result = [];
+    var headers = lines[0].split(",");
+    for (var i = 1; i < lines.length; i++) {
+        var obj = {};
+        var currentline = lines[i].split(",");
+
+        for (var j = 0; j < headers.length; j++) {
+            obj[headers[j]] = currentline[j];
+        }
+        result.push(obj);
+    }
+    return JSON.stringify(result);
+}
+
+function upload(url, json) {
+    $.ajax({
+        url: url,
+        method: 'POST',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        processData: true,
+        data: json,
+        success: function (data) {
+            console.log(data.responseText);
+        },
+        error: function (xhr, status, error) {
+            console.error("Failed to send JSON data.");
+            console.log(xhr.responseText);
+        }
+    });
 }

@@ -18,14 +18,9 @@ namespace MHR
 
         //Listening web method
         [WebMethod]
-        public static string GetData(FileUpload csvData)
+        public static string GetData(string objData)
         {
-            if (csvData.HasFile)
-            {
-                return "success";
-            }
-
-            return "failure";
+            return "success";
         }
     }
 }

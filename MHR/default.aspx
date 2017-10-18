@@ -20,7 +20,7 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        <input id="fileUpload" type="file" onchange="upload()" aria-label="upload" />
+        <input id="fileUpload" type="file" onchange="setData('GetData')" aria-label="upload" />
         <div id="pnlUpdate">
 
 
