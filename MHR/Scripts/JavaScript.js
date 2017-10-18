@@ -2,7 +2,7 @@
 /// <reference path="https://cdn.datatables.net/v/dt/dt-1.10.15/datatables.min.js" />
 
 //Globals needed for endpoints.
-var urlMHR = 'https://huckshome.com/projects/MHR/';
+var urlMHR = 'https://huckshome.com/projects/MHRServices/MHRService.svc/';
 
 //Stuff to do at page load.
 $(document).ready(function () {
@@ -21,7 +21,7 @@ function setData(url) {
         reader.readAsText(csv);
         reader.onload = function (e) {
             // browser completed reading file - display it
-            upload('http://localhost/projects/MHRServices/MHRService.svc/save', csvJSON(e.target.result));
+            upload(urlMHR + url, csvJSON(e.target.result));
         };
     }
 }
@@ -43,10 +43,11 @@ function csvJSON(csv) {
 }
 
 function upload(url, json) {
+    //TODO: switch to $.getJSON when a JSON is the return type of the service.
     $.ajax({
         url: url,
         method: 'POST',
-        contentType: "application/json; charset=utf-8",
+        //contentType: "application/json; charset=utf-8",
         dataType: 'json',
         processData: true,
         data: json,
