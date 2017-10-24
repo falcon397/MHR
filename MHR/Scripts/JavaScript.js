@@ -10,7 +10,6 @@ $(document).ready(function () {
     $('#Form1').submit(function (event) { event.preventDefault(); });
 
     //Main Functions
-    //Test
 
 });
 
