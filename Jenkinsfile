@@ -6,15 +6,9 @@ pipeline {
     agent any
     
     stages {
-        stage('SCM') {
-            steps {
-                git credentialsId: '912d4fd4-bb0a-4307-b934-79243be029e0', url: 'https://github.com/falcon397/MHR'
-                bat 'C:\\Services\\nuget.exe restore MHR.sln'
-            }
-        }
-        
         stage('Build + SonarQube analysis') {
             steps {
+				bat 'C:\\Services\\nuget.exe restore MHR.sln'
                 withSonarQubeEnv('Huckshome SonarQube Server') {
                     bat '"%sqScannerMsBuildHome%\\SonarQube.Scanner.MSBuild.exe" begin /k:MHR_UI /n:MHR_UI /v:1.0.0.%BUILD_NUMBER% /d:sonar.host.url=%SONAR_HOST_URL% /d:sonar.login=%SONAR_AUTH_TOKEN%'
                     bat '"C:\\Program Files (x86)\\MSBuild\\14.0\\Bin\\MSBuild.exe" MHR.sln /t:Build /p:Configuration=Debug'
