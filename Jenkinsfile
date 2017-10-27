@@ -2,7 +2,7 @@
 pipeline {
     environment {
         sqScannerMsBuildHome = tool 'Scanner for MSBuild'
-		strProjectName = 'MHR_UI'
+		strProjectName = 'MHR'
     }
     
     agent any
