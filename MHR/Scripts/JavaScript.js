@@ -14,7 +14,6 @@ $(document).ready(function () {
 });
 
 function setData(url) {
-    var test = new Object();
     var csv = document.getElementById('fileUpload').files[0];
     if (csv) {
         // create reader
@@ -22,8 +21,7 @@ function setData(url) {
         reader.readAsText(csv);
         reader.onload = function (e) {
             // browser completed reading file - display it
-            //upload(urlMHR + url, csvJSON(e.target.result));
-            test = csvJSON(e.target.result);
+            upload(urlMHR + url, csvJSON(e.target.result));
         };
     }
 
